@@ -5,9 +5,9 @@
 #include <cmath>
 #include <vector>
 #include "eigen3/Eigen/Dense"
-#include <root/Minuit2/FunctionMinimum.h>
-#include <root/Minuit2/MnMigrad.h>
-#include <root/Minuit2/MnUserParameters.h>
+#include "Minuit2/FunctionMinimum.h"
+#include "Minuit2/MnMigrad.h"
+#include "Minuit2/MnUserParameters.h"
 #include "ChiSquared.h"
 
 using namespace ROOT::Minuit2;
