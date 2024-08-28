@@ -14,7 +14,8 @@ VectorXcd RunRGEs(const std::vector<double>& parameters) {
     double gGUT, MGUT, MEW, Lambda, TanBeta, M12, A, A0, M0;
     dcomplex MHu2, MHd2, mu;
     Matrix3cd Yu, Yd, Ye, TYu, TYd, TYe, Au, Ad, Ae, Mq2, Ml2, Mu2, Md2, Me2;
-    Vector3cd g, M;
+    Vector3cd M;
+    Vector3d g;
     double PlankScale = 1e18; //GeV
     
     double b1 = 31./5;
@@ -22,39 +23,71 @@ VectorXcd RunRGEs(const std::vector<double>& parameters) {
     double b3 = -3.;
     double M1, M2, M3;
     
+    double e3, lam, re, ret, rep, rxi, rdel, phidel, ralp, phialp, rbet,
+           phibet, phie, phiet, phiep, phixi, rth, phith;
+           
+
+    std::complex<double> del, alp, bet, e, et, ep, xi, th;
+
     // Mapping the parameters into the model:
     gGUT = sqrt(4.0 * pi / parameters[0]);
     MGUT = parameters[1] * 1.e+16;
     MEW = parameters[2];
     Lambda  = parameters[3];
     TanBeta = parameters[4];
-    mu  = parameters[5];
-    M12  = parameters[6];
-    A    = parameters[7];
-    M0   = parameters[8];
-    MHd2  = dcomplex(parameters[9] * M0 * M0, 0.);
-    MHu2  = dcomplex(parameters[10] * M0 * M0, 0.);
-    A0 = parameters[11];
-
-    g << dcomplex(gGUT, 0), dcomplex(gGUT, 0), dcomplex(gGUT, 0);
+    mu      = parameters[5];
+    M12     = parameters[6];
+    A       = parameters[7];
+    M0      = parameters[8];
+    MHd2    = dcomplex(parameters[9] * M0 * M0, 0.);
+    MHu2    = dcomplex(parameters[10] * M0 * M0, 0.);
+    A0      = parameters[11];
+    re      = parameters[13];
+    ret     = parameters[14];
+    rep     = parameters[15];
+    rxi     = parameters[16];
+    rdel    = parameters[17];
+    phidel  = parameters[18];
+    ralp    = parameters[19];
+    phialp  = parameters[20];
+    rbet    = parameters[21];
+    phibet  = parameters[22];
+    phie    = parameters[23];
+    phiet   = parameters[24];
+    phiep   = parameters[25];
+    phixi   = parameters[26];
+    rth     = parameters[27];
+    phith   = parameters[28];
+    
+    g << gGUT, gGUT, std::sqrt(1 + parameters[12]) * gGUT;
 
     M1 = (1+(gGUT*gGUT*b1*A)/(16*pi*pi)*std::log(PlankScale/M0))*M12;
     M2 = (1+(gGUT*gGUT*b2*A)/(16*pi*pi)*std::log(PlankScale/M0))*M12;
     M3 = (1+(gGUT*gGUT*b3*A)/(16*pi*pi)*std::log(PlankScale/M0))*M12;
 
     M << dcomplex(M1, 0), dcomplex(M2, 0), dcomplex(M3, 0);
+    
+    
+    del = std::complex<double> (rdel*cos(phidel), rdel*sin(phidel));
+    alp = std::complex<double> (ralp*cos(phialp), ralp*sin(phialp));
+    bet = std::complex<double> (rbet*cos(phibet), rbet*sin(phibet));
+    e   = std::complex<double> (re*cos(phie), re*sin(phie));
+    et  = std::complex<double> (ret*cos(phiet), ret*sin(phiet));
+    ep  = std::complex<double> (rep*cos(phiep), rep*sin(phiep));
+    xi  = std::complex<double> (rxi*cos(phixi), rxi*sin(phixi));
+    th  = std::complex<double> (rth*cos(phith), rth*sin(phith));
+    
+    Yu << 0, ep * ( 1./(1.+alp-(4./3.)*bet)-1./(1.+alp+(1./3.)*bet) )-th*(          1./(1.+alp-(4./3.)*bet)+1./(1.+alp+(1./3.)*bet) ), -xi / (1.+alp-(4./3.)*bet),
+        -ep * ( 1./(1.+alp-(4./3.)*bet)-1./(1.+alp+(1./3.)*bet) )-th*( 1./(1.+alp-(4./3.)*bet)+1./(1.+alp+(1./3.)*bet) ), et * ( 1./(1.+alp-(4./3.)*bet)-1./(1.+alp+(1./3.)*bet) ), -e / (1.+alp-(4./3.)*bet),
+        xi /(1.+alp+(1./3.)*bet), e /(1.+alp+(1./3.)*bet), dcomplex(Lambda, 0);
 
-    Yu << 0, 0, 0,
-          0, 0, 0,
-          0, 0, dcomplex(Lambda, 0);
+    Yd << 0, ep * ( 1./(1.-3.*alp+(2./3.)*bet)-1./(1.+alp+(1./3.)*bet) )-th*( 1./(1.-3.*alp+(2./3.)*bet)+1./(1.+alp+(1./3.)*bet) ), -xi / (1.-3.*alp+(2./3.)*bet),
+        -ep * ( 1./(1.-3.*alp+(2./3.)*bet)-1./(1.+alp+(1./3.)*bet) )-th*( 1./(1.-3.*alp+(2./3.)*bet)+1./(1.+alp+(1./3.)*bet) ), et * ( 1./(1.-3.*alp+(2./3.)*bet)-1./(1.+alp+(1./3.)*bet) ), -e / (1.-3.*alp+(2./3.)*bet),
+        xi / (1.+alp+(1./3.)*bet), e /(1.+alp+(1./3.)*bet), dcomplex(Lambda, 0);
 
-    Yd << 0, 0, 0,
-          0, 0, 0,
-          0, 0, dcomplex(Lambda, 0);
-
-    Ye << 0, 0, 0,
-          0, 0, 0,
-          0, 0, dcomplex(Lambda, 0);
+    Ye << 0, -ep * ( 1./(1.-3.*alp-bet)-1./(1.+alp+2.*bet) )-th*( 1./(1.-3.*alp-bet)+1./(1.+alp+2.*bet) ), 3. * xi  / (1.+alp+2.*bet),
+        ep * ( 1./(1.-3.*alp-bet)-1./(1.+alp+2.*bet) )-th*th*( 1./(1.-3.*alp-bet)+1./(1.+alp+2.*bet) ), 3. * et * ( 1./(1.-3.*alp-bet)-1./(1.+alp+2.*bet) ), 3. * e / (1.+alp+2.*bet),
+        -3.* xi  / (1.-3.*alp-bet), -3.* e / (1.-3.*alp-1.*bet), dcomplex(Lambda, 0);
 
     TYu = A0 * Yu;
     TYd = A0 * Yd;

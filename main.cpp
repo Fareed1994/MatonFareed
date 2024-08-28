@@ -5,9 +5,9 @@
 #include <cmath>
 #include <vector>
 #include "eigen3/Eigen/Dense"
-#include "Minuit2/FunctionMinimum.h"
-#include "Minuit2/MnMigrad.h"
-#include "Minuit2/MnUserParameters.h"
+#include <Minuit2/FunctionMinimum.h>
+#include <Minuit2/MnMigrad.h>
+#include <Minuit2/MnUserParameters.h>
 #include "ChiSquared.h"
 
 using namespace ROOT::Minuit2;
@@ -19,20 +19,37 @@ int main() {
     std::vector<double> errors = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
         1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
 
-    std::vector<double> parameters(12);
+    std::vector<double> parameters(29);
     
     parameters[0]  = 25.0;             // 4.*pi / gGUT^2
     parameters[1]  = 2.58374;          // MGUT / 1.e16
     parameters[2]  = 91.0;             // MEW
     parameters[3]  = 0.619038;         // Lambda
-    parameters[4]  = 50.0;             // TanBeta
+    parameters[4]  = 10.0;             // TanBeta
     parameters[5]  = 1055.21;          // mu
     parameters[6]  = 400.0;            // M12
     parameters[7]  = 1.0;              // A
     parameters[8]  = 25000.0;          // M0
     parameters[9]  = 1.93917;          // MHd^2/M0^2
-    parameters[10] = 1.60969;          // MHu^2/M0^2
+    parameters[10] = 1.00969;          // MHu^2/M0^2
     parameters[11] = -51017.0;         // A0
+    parameters[12] = -1.36;            // e3
+    parameters[13] = 0.0;
+    parameters[14] = 0.0;
+    parameters[15] = 0.0;
+    parameters[16] = 0.0;
+    parameters[17] = 0.0;
+    parameters[18] = 0.0;
+    parameters[19] = 0.0;
+    parameters[20] = 0.0;
+    parameters[21] = 0.0;
+    parameters[22] = 0.0;
+    parameters[23] = 0.0;
+    parameters[24] = 0.0;
+    parameters[25] = 0.0;
+    parameters[26] = 0.0;
+    parameters[27] = 0.0;
+    parameters[28] = 0.0;
     
     std::cout.precision(16);
     
