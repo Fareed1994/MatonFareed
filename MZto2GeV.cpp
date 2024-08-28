@@ -114,6 +114,7 @@ double MZto2GeV(double M_Z, double a_em, double a_3, VectorXd& mYu,
                double ex_m_b, double ex_m_c, double ex_m_tau, double ex_m_m,
                double ex_m_e, double& Mb, double& Mc)
 {
+  std::cout<<"MZto2GeVing!"<<std::endl;
   double P;
   P = 1.;
 

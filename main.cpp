@@ -5,9 +5,9 @@
 #include <cmath>
 #include <vector>
 #include "eigen3/Eigen/Dense"
-#include "FunctionMinimum.h"
-#include "MnMigrad.h"
-#include "MnUserParameters.h"
+#include <Minuit2/FunctionMinimum.h>
+#include <Minuit2/MnMigrad.h>
+#include <Minuit2/MnUserParameters.h>
 #include "ChiSquared.h"
 
 using namespace ROOT::Minuit2;
@@ -21,18 +21,18 @@ int main() {
 
     std::vector<double> parameters(12);
     
-    parameters[0]  = 34.0;             // 4.*pi / gGUT^2
+    parameters[0]  = 25.0;             // 4.*pi / gGUT^2
     parameters[1]  = 2.58374;          // MGUT / 1.e16
     parameters[2]  = 91.0;             // MEW
     parameters[3]  = 0.619038;         // Lambda
-    parameters[4]  = 2.0;              // TanBeta
+    parameters[4]  = 50.0;             // TanBeta
     parameters[5]  = 1055.21;          // mu
     parameters[6]  = 400.0;            // M12
     parameters[7]  = 1.0;              // A
     parameters[8]  = 25000.0;          // M0
     parameters[9]  = 1.93917;          // MHd^2/M0^2
     parameters[10] = 1.60969;          // MHu^2/M0^2
-    parameters[11] = -51016.8;         // A0
+    parameters[11] = -51017.0;         // A0
     
     std::cout.precision(16);
     

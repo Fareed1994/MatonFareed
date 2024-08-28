@@ -5,7 +5,7 @@
 #include "RGEsRunner.h"
 #include "Matching.h"
 #include "eigen3/Eigen/Dense"
-#include "Minuit2/FCNBase.h"
+#include <Minuit2/FCNBase.h>
 
 using namespace ROOT::Minuit2;
 using Eigen::VectorXd;

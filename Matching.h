@@ -9,7 +9,7 @@
 
 using namespace Eigen;
 
-std::vector<double> Matching(const std::vector<double>& GUTparameters, const std::vector<double>& ExperimentalValues, VectorXcd& parameters, double v);
+std::vector<double> Matching(const std::vector<double>& GUTparameters, const std::vector<double>& ExperimentalValues, VectorXcd& parameters, double v, double *chi2);
 
 #define MATCHING_h
 

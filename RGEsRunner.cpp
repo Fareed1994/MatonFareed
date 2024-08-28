@@ -9,6 +9,7 @@ double penaltyFactor = 1.0;
 }
 
 VectorXcd RunRGEs(const std::vector<double>& parameters) {
+    std::cout<<"Running!"<<std::endl;
     double pi = M_PI;
     double gGUT, MGUT, MEW, Lambda, TanBeta, M12, A, A0, M0;
     dcomplex MHu2, MHd2, mu;
@@ -43,16 +44,16 @@ VectorXcd RunRGEs(const std::vector<double>& parameters) {
 
     M << dcomplex(M1, 0), dcomplex(M2, 0), dcomplex(M3, 0);
 
-    Yu << dcomplex(Lambda, 0), 0, 0,
-          0, dcomplex(Lambda, 0), 0,
+    Yu << 0, 0, 0,
+          0, 0, 0,
           0, 0, dcomplex(Lambda, 0);
 
-    Yd << dcomplex(Lambda, 0), 0, 0,
-          0, dcomplex(Lambda, 0), 0,
+    Yd << 0, 0, 0,
+          0, 0, 0,
           0, 0, dcomplex(Lambda, 0);
 
-    Ye << dcomplex(Lambda, 0), 0, 0,
-          0, dcomplex(Lambda, 0), 0,
+    Ye << 0, 0, 0,
+          0, 0, 0,
           0, 0, dcomplex(Lambda, 0);
 
     TYu = A0 * Yu;

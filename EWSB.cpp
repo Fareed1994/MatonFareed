@@ -42,6 +42,7 @@ double EWSB(double tanb, double mu, double mA,
   double& Gmu, double& alpha_em, double& alpha_em_MZ, double& alpha_3,
   double& rho_new, double& sw2pole)
 {
+  std::cout<<"EWSBing!"<<std::endl;
   double Pe;
   Pe = 1.;
 

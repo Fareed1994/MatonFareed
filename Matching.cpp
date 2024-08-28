@@ -1,7 +1,8 @@
 #include "Matching.h"
 
-std::vector<double> Matching(const std::vector<double>& GUTparameters, const std::vector<double>& ExperimentalValues, VectorXcd& parameters, double v)
+std::vector<double> Matching(const std::vector<double>& GUTparameters, const std::vector<double>& ExperimentalValues, VectorXcd& parameters, double v, double *chi2)
 {
+    std::cout<<"Matching!"<<std::endl;
     RGEsGlobals::penaltyFactor = 1;
     double MEW= 91.18;
     std::cout.precision(16);
@@ -39,6 +40,8 @@ std::vector<double> Matching(const std::vector<double>& GUTparameters, const std
       mstau_1, mstau_2, s2stau, c2stau, Mg, mg_slha; // Gluino mass
 
     int sign_mu2;
+    
+    double MW, MZ, sw2, mh;
 
     double MGUT, tanb, mA, M_Zpole, M_Wpole, mA_pole, chi2_best = 0.0,
       mHp_pole, mH_pole, mh_pole,
@@ -51,7 +54,7 @@ std::vector<double> Matching(const std::vector<double>& GUTparameters, const std
       sw2MSbar; // sw2MSbar to compare with data
     
     double Gmu, alpha_em, alpha3, rho_new;
-    
+    double Mt_Pole, Mtau, Ms, Mmu, Mu, Md, Me, Mb_Mc, Md_over_Ms, Q_2, Q;
     
     int k = 0;
     for(int i=0; i<=2; i++)
@@ -101,16 +104,18 @@ std::vector<double> Matching(const std::vector<double>& GUTparameters, const std
     Me2_Z = Me2;
     g_Z = g;
     
+    std::vector<double> list = {alpha_em, Gmu, alpha3, MZ, MW, Mu, Md, Mc, Ms, Mt_Pole, Mb, Mtau, Mmu,
+        Me, Mb_Mc, Md_over_Ms, Q_2, Q, sw2, V_ud, V_us, V_ub, V_cd, V_cs, V_cb, V_td, V_ts, V_tb, mh};
     //-------------------------------------------------
     // tree level DRbar MAsses, using v = v_best and MA
     //-------------------------------------------------
     double M_Z2 = 0.25 * (g(0) * g(0) * 3./5. + g(1) * g(1)) * v * v;
-    double MZ  = std::sqrt(M_Z2);
+    MZ  = std::sqrt(M_Z2);
     
     double M_W2 = 0.25 * g(1) * g(1) * v * v;
-    double MW = std::sqrt(M_W2);
+    MW = std::sqrt(M_W2);
     
-    double sw2  = g(0) * g(0) * (3./5.) / (g(0) * g(0) * 3./5. + g(1) * g(1));
+    sw2  = g(0) * g(0) * (3./5.) / (g(0) * g(0) * 3./5. + g(1) * g(1));
     
     double cb  = 1. / std::sqrt(1.+tanb*tanb);
     double sb  = tanb * cb;
@@ -122,7 +127,8 @@ std::vector<double> Matching(const std::vector<double>& GUTparameters, const std
 
     double mu2 = 0.5 * t2b * (std::real(MHu2) * tanb - std::real(MHd2) / tanb) - M_Z2/2;
     
-    if (mu2 < 0.0) std::cout<<"WARNING! Negative |mu|^2 trial!"<<std::endl;
+    if (mu2 < 0.0) {std::cout<<"WARNING! Negative |mu|^2 trial!"<<std::endl; return list;}
+    
     double mu = sqrt(fabs(mu2));
 
     double mA2 = std::real(MHd2) + std::real(MHu2) + 2. * mu2;
@@ -136,7 +142,7 @@ std::vector<double> Matching(const std::vector<double>& GUTparameters, const std
     mH   = sqrt(mH2);
 
     double mh2  = 0.5 * (mA2 + M_Z2 - sqrt((mA2+M_Z2) * (mA2+M_Z2) - 4. * mA2 * M_Z2*c2b * c2b));
-    double mh   = sqrt(mh2);
+    mh = sqrt(mh2);
     
     double t2a   = t2b * (mA2 + M_Z2) / (mA2 - M_Z2);
     c2a   = - c2b * (mA2 - M_Z2) / (mH2 - mh2);
@@ -153,6 +159,8 @@ std::vector<double> Matching(const std::vector<double>& GUTparameters, const std
 
     mHp_pole = mHp;
     mH_pole = mH;
+    
+
     //-------------------------------------------------
     // EWSB Loop
     //-------------------------------------------------
@@ -183,7 +191,7 @@ std::vector<double> Matching(const std::vector<double>& GUTparameters, const std
         mMch_Z = mMch;
 
         
-        if (fabs(P-1.) > epsilon) {RGEsGlobals::penaltyFactor = 1.e6 * P;}
+        if (fabs(P-1.)>epsilon) { *chi2 = 1.e13 * P; return list;}
 
         //-----------------------------------------
         // Integrating out first two family scalars
@@ -203,30 +211,29 @@ std::vector<double> Matching(const std::vector<double>& GUTparameters, const std
       //Electroweak Symmetry Breaking
       double Pe = EWSB(tanb, mu, mA, std::real(MHu2), std::real(MHd2), g, M, Mg, mYu, mYd, mYe, VCKM, TYu, TYd, TYe, mMu, mMd, mMe, GuL, GdL, GeL, GuR, GdR, GeR, GvL, MQ2, Mu2, Md2, ML2, Me2, mQu, mQd, mstop_1, mstop_2, s2stop, c2stop, msbot_1, msbot_2, s2sbot, c2sbot, mstau_1, mstau_2, s2stau, c2stau, mMch, U, V, mMnt, Nt, mu2_new, m_A2_new, mHu_new, mHd_new, v, MZ, MW, sw2, mHp, mH, mh, c2a, s2a, M_Zpole, M_Wpole, mA_pole, mHp_pole, mH_pole, mh_pole, Gmu, alpha_em, alpha_em_MZ, alpha3, rho_new, sw2pole);
 
-      if (fabs(Pe-1.)>epsilon) { RGEsGlobals::penaltyFactor = 1.e15 * Pe;}
+      if (fabs(Pe-1.)>epsilon) { *chi2 = 1.e15 * Pe; return list; }
 
-      sign_mu2 = 1;
-      if (mu2_new < 0.) {
+        sign_mu2 = 1;
+        if (mu2_new < 0.) {
           if (m_A2_new < 0.) {
-              RGEsGlobals::penaltyFactor = RGEsGlobals::penaltyFactor + 1.e3*fabs(m_A2_new) + 1.e8;
-              if (RGEsGlobals::penaltyFactor < chi2_best) {
-                  for (int i =0; i<107; i++) new_parameters(i) = parameters(i);
-                  chi2_best = RGEsGlobals::penaltyFactor;
-              }
+            *chi2 = *chi2 + 1.e3*std::abs(m_A2_new) + 1.e8;
+            if (*chi2 < chi2_best) {
+              chi2_best = *chi2;
+            }
           }
-        //seems to work better this way
-        sign_mu2 = -1;
-        mu2_new = - mu2_new;
-      }
-
-      // Check if m_A2_new < 0. mA_pole2 > 0 was tested in ewsb
-      if (m_A2_new < 0.) {
-        RGEsGlobals::penaltyFactor = 1.e3*fabs(m_A2_new) + 1.e8;
-        if (RGEsGlobals::penaltyFactor < chi2_best) {
-          for (int i =0; i<107; i++) new_parameters(i) = parameters(i);
-          chi2_best = RGEsGlobals::penaltyFactor;
+          //seems to work better this way
+          sign_mu2 = -1;
+          mu2_new = - mu2_new;
         }
-      }
+
+        // Check if m_A2_new < 0. mA_pole2 > 0 was tested in ewsb
+        if (m_A2_new < 0.) {
+          *chi2 = 1.e3*std::abs(m_A2_new) + 1.e8;
+          if (*chi2 < chi2_best) {
+            chi2_best = *chi2;
+          }
+          break;
+        }
 
       chi2_EWSB = fabs((mu2_new - mu*mu))/(1000.*1000.) +
         fabs((mA_pole*mA_pole - mA_pole_zal*mA_pole_zal))/
@@ -238,6 +245,7 @@ std::vector<double> Matching(const std::vector<double>& GUTparameters, const std
 
 
     } while (chi2_EWSB > 1.e-8);
+    
     //-------------------------------------------------
     // End of EWSB Loop
     //-------------------------------------------------
@@ -246,7 +254,7 @@ std::vector<double> Matching(const std::vector<double>& GUTparameters, const std
     vd = v / sqrt(2. + 2.* tanb * tanb);
     
     //Top pole mass:
-    double Mt_Pole = mYu(2)*( 1. + g(2)*g(2)/(3.*4.*M_PI*M_PI)
+    Mt_Pole = mYu(2)*( 1. + g(2)*g(2)/(3.*4.*M_PI*M_PI)
       * (6.*std::log(MEW/mYu(2)) + 5.)
       + 10.95 *g(2)*g(2)*g(2)*g(2)/(4.*M_PI*M_PI*4.*M_PI*M_PI)
       + (6.*std::log(MEW/mYu(2)) + 5.) * (4./9.)
@@ -308,20 +316,19 @@ std::vector<double> Matching(const std::vector<double>& GUTparameters, const std
     }
 
     Mb = mYd(2);
-    double Mtau = mYe(2);
+    Mtau = mYe(2);
 
     Mc = mYu(1);
-    double Ms = mYd(1);
-    double Mmu = mYe(1);
+    Ms = mYd(1);
+    Mmu = mYe(1);
 
-    double Mu = mYu(0);
-    double Md = mYd(0);
-    double Me = mYe(0);
+    Mu = mYu(0);
+    Md = mYd(0);
+    Me = mYe(0);
 
-    double Mb_Mc = Mb - Mc;
-    double Md_over_Ms = Md/Ms;
-    double Q_2 = (Md-Mu)*(Md+Mu)/( (Ms-0.5*(Md+Mu))*(Ms+0.5*(Md+Mu)) ); // Defined in PDG, better to compare to experiment
-    double Q;
+    Mb_Mc = Mb - Mc;
+    Md_over_Ms = Md/Ms;
+    Q_2 = (Md-Mu)*(Md+Mu)/( (Ms-0.5*(Md+Mu))*(Ms+0.5*(Md+Mu)) ); // Defined in PDG, better to compare to experiment
     if (Q_2>0.) {
       Q = 1/sqrt(Q_2);
     } else {
@@ -353,7 +360,5 @@ std::vector<double> Matching(const std::vector<double>& GUTparameters, const std
     parameters(106) = MHd2;
     //parameters(107) = Bmu;
     
-    std::vector<double> list = {alpha_em, Gmu, alpha3, MZ, MW, Mu, Md, Mc, Ms, Mt_Pole, Mb, Mtau, Mmu,
-        Me, Mb_Mc, Md_over_Ms, Q_2, Q, sw2, V_ud, V_us, V_ub, V_cd, V_cs, V_cb, V_td, V_ts, V_tb, mh};
     return list;
 }
